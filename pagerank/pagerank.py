@@ -9,7 +9,8 @@ SAMPLES = 10000
 
 def main():
     if len(sys.argv) == 1:        
-        corpus  = crawl("corpus0")
+        corpus  = crawl("corpus1")
+        corpus =  {'1': {'2'}, '2': {'3', '1'}, '3': {'4', '5', '2'}, '4': {'1', '2'}, '5': set()} 
     elif len(sys.argv) == 2:
         corpus = crawl(sys.argv[1])
     else:
@@ -118,21 +119,22 @@ def iterate_pagerank(corpus, damping_factor):
     # raise NotImplementedError
     num_pages = len(corpus)
     pagerank = {page: 1/num_pages for page in corpus}
-    prob = {page: 0 for page in corpus}
-    num_links = {page: len(corpus.get(page, set())) for page in corpus}
+    num_links = {page: len(links) for page, links in corpus.items()}
 
     while True:
+        new_pagerank = {}
         for p in corpus:
-            prob[p] = (1-damping_factor)/num_pages
-            for i in corpus:
-                linked_pages = corpus.get(i, set())
+            new_pagerank[p] = (1-damping_factor)/num_pages
+            for i, linked_pages in corpus.items():
                 if p in linked_pages:
-                    prob[p] += damping_factor*pagerank[i]/num_links[i]
-        errors = {page: abs(pagerank[page] - prob[page]) for page in corpus}
+                    new_pagerank[p] += damping_factor*pagerank[i]/num_links[i]
+                if num_links[i] == 0:
+                    new_pagerank[p] += damping_factor*pagerank[i]/num_pages
+        errors = {page: abs(pagerank[page] - new_pagerank[page]) for page in corpus}
         if all(error < 0.001 for error in errors.values()):
             break
         else:
-            pagerank = {page: rank for page,rank in prob.items()}
+            pagerank = new_pagerank
     return pagerank
 if __name__ == "__main__":
     main()
