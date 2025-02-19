@@ -10,7 +10,7 @@ SAMPLES = 10000
 def main():
     if len(sys.argv) == 1:        
         corpus  = crawl("corpus1")
-        corpus =  {'1': {'2'}, '2': {'3', '1'}, '3': {'4', '5', '2'}, '4': {'1', '2'}, '5': set()} 
+        # corpus =  {'1': {'2'}, '2': {'3', '1'}, '3': {'4', '5', '2'}, '4': {'1', '2'}, '5': set()} 
     elif len(sys.argv) == 2:
         corpus = crawl(sys.argv[1])
     else:
